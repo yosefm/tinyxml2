@@ -1036,19 +1036,41 @@ char* XMLDtd::ParseDeep( char* p, StrPair* )
 {
     // Dtd parses as text.
     char* start = p;
+	bool endFound = false;
+	int brackets = 0;			// trackes whether we are inside in inline DTD
 
-    // Find closing '>', skipping over any local definition contained between '[' and ']'
+	while(*p) {
+		// Skip over comments.
+		if (strncmp(p, "<!--", 4) == 0) {
+			p = strstr(p+4, "-->");
+			if (p) {
+				p += 3;
+			}
+		}
+		if (!p) break;
 
-    while( *p && *p != '>' && *p != '[') ++p;
-    
-    if ( *p == '[' )
-    {
-      while( *p && *p != ']' ) ++p;
-      while( *p && *p != '>' ) ++p;
-    }
+		// Skip over defs
+		if (brackets && strncmp(p, "<!", 2) == 0 ) {
+			p = strstr(p+2, ">");
+			if (p) {
+				p++;
+			}
+		}
+		if (!p) break;
 
-    if ( *p != '>' ) {
-        _document->SetError( XML_ERROR_PARSING_UNKNOWN, start, 0 );
+		if (brackets == 0 && *p == '>' ) {
+			endFound = true;
+			break;
+		}
+		if (*p == '[' )
+			++brackets;
+		if (*p == ']' )
+			--brackets;
+		++p;
+	}
+
+	if (!endFound || !p || !*p) {
+		_document->SetError( XML_ERROR_PARSING_DTD, start, 0 );
     }
 
     _value.Set(start, p, StrPair::NEEDS_NEWLINE_NORMALIZATION );
@@ -1069,8 +1091,8 @@ XMLNode* XMLDtd::ShallowClone( XMLDocument* doc ) const
 
 bool XMLDtd::ShallowEqual( const XMLNode* compare ) const
 {
-    const XMLDtd* unknown = compare->ToDtd();
-    return ( unknown && XMLUtil::StringEqual( unknown->Value(), Value() ));
+    const XMLDtd* dtd = compare->ToDtd();
+    return ( dtd && XMLUtil::StringEqual( dtd->Value(), Value() ));
 }
 
 
@@ -1658,6 +1680,7 @@ const char* XMLDocument::_errorNames[XML_ERROR_COUNT] = {
     "XML_ERROR_PARSING_COMMENT",
     "XML_ERROR_PARSING_DECLARATION",
     "XML_ERROR_PARSING_UNKNOWN",
+    "XML_ERROR_PARSING_DTD",
     "XML_ERROR_EMPTY_DOCUMENT",
     "XML_ERROR_MISMATCHED_ELEMENT",
     "XML_ERROR_PARSING",

@@ -486,18 +486,18 @@ int main( int argc, const char ** argv )
 		doc.PrintError();
 
 		XMLTest( "Dictionary", "xml version=\"1.0\" encoding=\"UTF-8\"",
-						  doc.FirstChild()->ToDeclaration()->Value() );
+				 doc.FirstChild()->ToDeclaration()->Value() );
 		XMLTest( "Dictionary", true, doc.FirstChild()->NextSibling()->ToDtd() ? true : false );
-    XMLTest( "Dictionary", "500M",
-             doc.LastChild()->LastChild()->FirstChild()->ToElement()->Attribute("size") );
+		XMLTest( "Dictionary", "500M",
+				doc.LastChild()->LastChild()->FirstChild()->ToElement()->Attribute("size") );
 
 		XMLDocument doc2;
 		doc2.LoadFile( "resources/out/dictionaryout.xml" );
 		XMLTest( "Dictionary-out", "xml version=\"1.0\" encoding=\"UTF-8\"",
-						  doc2.FirstChild()->ToDeclaration()->Value() );
+				 doc2.FirstChild()->ToDeclaration()->Value() );
 		XMLTest( "Dictionary-out", true, doc2.FirstChild()->NextSibling()->ToDtd() ? true : false );
-    XMLTest( "Dictionary", "500M",
-             doc2.LastChild()->LastChild()->FirstChild()->ToElement()->Attribute("size") );
+		XMLTest( "Dictionary", "500M",
+				doc2.LastChild()->LastChild()->FirstChild()->ToElement()->Attribute("size") );
 	}
 
 

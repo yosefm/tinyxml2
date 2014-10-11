@@ -485,7 +485,7 @@ public:
     }
 };
 
-// WARNING: must match XMLErrorNames[]
+// WARNING: must match XMLDocument::_errorNames[]
 enum XMLError {
     XML_SUCCESS = 0,
     XML_NO_ERROR = 0,
@@ -503,6 +503,7 @@ enum XMLError {
     XML_ERROR_PARSING_COMMENT,
     XML_ERROR_PARSING_DECLARATION,
     XML_ERROR_PARSING_UNKNOWN,
+    XML_ERROR_PARSING_DTD,
     XML_ERROR_EMPTY_DOCUMENT,
     XML_ERROR_MISMATCHED_ELEMENT,
     XML_ERROR_PARSING,
@@ -1004,10 +1005,13 @@ protected:
 
 
 /** The <!DOCTYPE> structure can contain internal definition that
-  may contains other <!xxx ...> entities.  (Otherwise, these could
-  be handled as XMLUnknown nodes.) 
-	It will be written back to the XML, unchanged, when the file
-	is saved.
+	may contains other <!xxx ...> entities.  (Otherwise, these could
+	be handled as XMLUnknown nodes.) 
+
+	TinyXML-2 does not interpret, enforce, or even parse the DTD.
+
+	The XMLDTD tag will be written back to the XML, unchanged, 
+	when the file is saved.
 */
 
 class TINYXML2_LIB XMLDtd : public XMLNode

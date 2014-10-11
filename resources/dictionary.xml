@@ -2,6 +2,7 @@
 
 <!DOCTYPE Dictionary [
   <!-- Test of the ability to parse internally defined DTD -->
+  <!-- Test for comment nastiness: <]> -->
   <!ELEMENT Dictionary    (Storage+)             >
   <!ELEMENT Storage       (WordFile+, WordList?) >
   <!ELEMENT Growth         EMPTY                 >
